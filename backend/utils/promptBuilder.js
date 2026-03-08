@@ -16,7 +16,7 @@ segmentCount = Math.min(12, Math.max(8, mins * 2))
 return `
 You are Synapsse AI.
 
-Generate a cinematic video script for content creators.
+Generate a cinematic short-form video script for creators.
 
 INPUT
 
@@ -28,21 +28,20 @@ Duration: ${input.duration}
 Language: ${input.language}
 Format: ${input.format}
 
-RULES
+IMPORTANT RULES
 
-1. Output must be valid JSON only.
-2. Do not include markdown.
-3. Do not include explanations.
-4. Response must start with { and end with }.
-5. Generate exactly ${segmentCount} cinematic segments.
-6. Add a final CTA segment as "segment":"Final".
-7. Voiceover English MUST be proper English sentences.
-8. Voiceover Hindi MUST be written in Hindi script (Devanagari).
-9. Never write Hindi using English letters.
-10. English and Hindi voiceovers must be natural translations, not identical text.
+1. Output MUST be valid JSON.
+2. Do NOT include markdown.
+3. Do NOT include explanations.
+4. Response MUST start with { and end with }.
+5. Generate EXACTLY ${segmentCount} narrative segments.
+6. After those segments add a final CTA segment with "segment":"Final".
+7. Narrative must contain MULTIPLE objects inside the array.
+8. Each segment object must follow the structure shown below.
+9. Do NOT stop early.
+10. Ensure the narrative array contains all ${segmentCount} segments.
 
-
-STRUCTURE
+SEGMENT STORY FLOW
 
 Segment 1 = Hook moment  
 Segment 2 = Problem introduction  
@@ -55,35 +54,20 @@ Segment 8 = Climax insight
 
 Final Segment = Direct-to-camera CTA
 
-OUTPUT FORMAT
+JSON STRUCTURE
 
 {
  "scripts":[
   {
    "hook":"",
    "narrative":[
-    {
-     "segment":"1",
-     "visual":"",
-     "voiceover":{
-      "english":"",
-      "hindi":""
-     },
-     "audio":{
-      "ambience":"",
-      "transitions":""
-     },
-     "camera_setup":{
-      "shot_type":"",
-      "angle":"",
-      "movement":"",
-      "lighting":""
-     },
-     "settings":{
-      "iso_range":"",
-      "aperture":""
-     }
-    }
+
+    { "segment":"1","visual":"","voiceover":{"english":"","hindi":""},"audio":{"ambience":"","transitions":""},"camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},"settings":{"iso_range":"","aperture":""} },
+
+    { "segment":"2","visual":"","voiceover":{"english":"","hindi":""},"audio":{"ambience":"","transitions":""},"camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},"settings":{"iso_range":"","aperture":""} },
+
+    { "segment":"3","visual":"","voiceover":{"english":"","hindi":""},"audio":{"ambience":"","transitions":""},"camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},"settings":{"iso_range":"","aperture":""} }
+
    ],
    "retention_prediction":{
     "overall_retention_percentage":0,
@@ -96,6 +80,8 @@ OUTPUT FORMAT
  "titles":[],
  "thumbnail_text":[]
 }
+
+Remember: narrative must contain ${segmentCount} segments plus a final CTA segment.
 `;
 }
 
