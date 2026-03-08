@@ -9,7 +9,9 @@ deleteScript
 
 const router = express.Router();
 
-/* Generate Script */
+/* ================================
+   GENERATE SCRIPT
+================================ */
 
 router.post("/generate-script", async (req,res)=>{
 
@@ -36,7 +38,9 @@ message:"Script generation failed"
 });
 
 
-/* Save Script */
+/* ================================
+   SAVE SCRIPT
+================================ */
 
 router.post("/save-script", async (req,res)=>{
 
@@ -65,7 +69,9 @@ message:"Failed to save script"
 });
 
 
-/* Get Script History */
+/* ================================
+   GET SCRIPT HISTORY
+================================ */
 
 router.get("/script-history", async (req,res)=>{
 
@@ -92,7 +98,9 @@ message:"Failed to fetch history"
 });
 
 
-/* Delete Script */
+/* ================================
+   DELETE SCRIPT
+================================ */
 
 router.delete("/script-history/:id", async (req,res)=>{
 
@@ -119,7 +127,9 @@ message:"Failed to delete script"
 });
 
 
-/* Get Scripts */
+/* ================================
+   GET ALL SCRIPTS
+================================ */
 
 router.get("/scripts", async (req,res)=>{
 

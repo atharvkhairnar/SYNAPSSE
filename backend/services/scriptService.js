@@ -85,14 +85,12 @@ let aiData;
 
 try{
 
-// first attempt normal parse
 aiData = JSON.parse(aiText);
 
 }catch(err){
 
 try{
 
-// fallback extraction
 const start = aiText.indexOf("{");
 const end = aiText.lastIndexOf("}") + 1;
 
@@ -102,15 +100,13 @@ aiData = JSON.parse(jsonString);
 
 }catch(e){
 
-console.log("⚠️ AI returned invalid JSON, using fallback");
+console.log("⚠️ AI returned invalid JSON");
 
 aiData = {
 scripts:[
 {
 hook:"Generated hook",
-narrative:[],
-retention_prediction:{},
-viral_probability_score:0
+narrative:[]
 }
 ],
 titles:[],
@@ -121,7 +117,58 @@ thumbnail_text:[]
 
 }
 
+/* ================================
+   FORCE 8 SEGMENTS
+================================ */
+
+if(aiData?.scripts?.[0]){
+
+let narrative = aiData.scripts[0].narrative || [];
+
+const targetSegments = 8;
+
+while(narrative.length < targetSegments){
+
+const index = narrative.length + 1;
+
+narrative.push({
+segment:String(index),
+visual:"Cinematic continuation of the story",
+voiceover:{
+english:"The story continues with deeper insight.",
+hindi:"कहानी और गहराई के साथ आगे बढ़ती है।"
+},
+audio:{
+ambience:"cinematic ambience",
+transitions:"smooth transition"
+},
+camera_setup:{
+shot_type:"medium shot",
+angle:"eye level",
+movement:"slow pan",
+lighting:"cinematic lighting"
+},
+settings:{
+iso_range:"100-400",
+aperture:"f/2.8"
+}
+});
+
+}
+
+aiData.scripts[0].narrative = narrative;
+
+}
+
+/* ================================
+   HOOK OPTIMIZATION
+================================ */
+
 const optimizedHooks = await generateHooks(topic);
+
+/* ================================
+   FINAL RESULT
+================================ */
 
 const result = {
 
