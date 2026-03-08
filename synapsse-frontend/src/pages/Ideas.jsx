@@ -10,7 +10,7 @@ async function generateIdeas(){
 
 try{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/generate-ideas",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/ideas",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
