@@ -19,7 +19,7 @@ updateIdeas()
 
 /* FETCH SCRIPTS */
 
-fetch("http://localhost:3000/api/scripts")
+fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts")
 .then(res=>res.json())
 .then(data=>{
 if(data.success){
@@ -36,7 +36,7 @@ setRecentScripts(latest)
 
 function fetchCalendar(){
 
-fetch("http://localhost:3000/api/calendar")
+fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar")
 .then(res=>res.json())
 .then(data=>{
 if(data.success){
