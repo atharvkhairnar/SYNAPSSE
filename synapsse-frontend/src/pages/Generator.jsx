@@ -41,7 +41,13 @@ format:"Cinematic"
 
 const data = await res.json()
 
+/* SAFE PARSE */
+
+if(data && data.data){
 setScript(data.data)
+}else{
+setScript(null)
+}
 
 setLoading(false)
 
@@ -142,7 +148,7 @@ loading
 
 {/* SCRIPT OUTPUT */}
 
-{script && (
+{script && script?.scripts && (
 
 <div className="mt-10">
 
@@ -162,7 +168,7 @@ className="bg-surface border border-border p-6 rounded-xl mb-8 shadow-lg hover:s
 <p className="text-lg text-textMain leading-relaxed">
 {
 script?.scripts?.[0]?.hook ||
-script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
+script?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
 "No hook generated"
 }
 </p>
@@ -174,7 +180,7 @@ script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
 
 {script?.scripts?.[0]?.narrative?.map((scene,index)=>(
 <motion.div
-key={scene.segment}
+key={scene.segment || index}
 initial={{opacity:0,y:20}}
 animate={{opacity:1,y:0}}
 transition={{delay:index*0.15,duration:0.4}}
@@ -182,7 +188,7 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 >
 
 <h3 className="text-lg text-primary font-bold mb-4">
-🎥 Segment {scene.segment}
+🎥 Segment {scene.segment || index+1}
 </h3>
 
 
@@ -190,7 +196,7 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 
 <div className="mb-4">
 <p className="text-textMuted text-sm mb-1">VISUAL</p>
-<p className="text-textMain">{scene.visual}</p>
+<p className="text-textMain">{scene.visual || "Scene description unavailable"}</p>
 </div>
 
 
@@ -198,8 +204,8 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 
 <div className="mb-4">
 <p className="text-textMuted text-sm mb-1">VOICEOVER</p>
-<p><b>English:</b> {scene?.voiceover?.english}</p>
-<p><b>Hindi:</b> {scene?.voiceover?.hindi}</p>
+<p><b>English:</b> {scene?.voiceover?.english || "Voiceover missing"}</p>
+<p><b>Hindi:</b> {scene?.voiceover?.hindi || "—"}</p>
 </div>
 
 
@@ -207,8 +213,8 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 
 <div className="mb-4">
 <p className="text-textMuted text-sm mb-1">AUDIO</p>
-<p><b>Ambience:</b> {scene?.audio?.ambience}</p>
-<p><b>Transition:</b> {scene?.audio?.transitions}</p>
+<p><b>Ambience:</b> {scene?.audio?.ambience || "Cinematic background music"}</p>
+<p><b>Transition:</b> {scene?.audio?.transitions || "Smooth transition"}</p>
 </div>
 
 
@@ -216,10 +222,10 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 
 <div className="mb-4">
 <p className="text-textMuted text-sm mb-1">CAMERA</p>
-<p><b>Shot Type:</b> {scene?.camera_setup?.shot_type}</p>
-<p><b>Angle:</b> {scene?.camera_setup?.angle}</p>
-<p><b>Movement:</b> {scene?.camera_setup?.movement}</p>
-<p><b>Lighting:</b> {scene?.camera_setup?.lighting}</p>
+<p><b>Shot Type:</b> {scene?.camera_setup?.shot_type || "Medium Shot"}</p>
+<p><b>Angle:</b> {scene?.camera_setup?.angle || "Eye Level"}</p>
+<p><b>Movement:</b> {scene?.camera_setup?.movement || "Slow Pan"}</p>
+<p><b>Lighting:</b> {scene?.camera_setup?.lighting || "Soft Lighting"}</p>
 </div>
 
 
@@ -227,8 +233,8 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 
 <div>
 <p className="text-textMuted text-sm mb-1">SETTINGS</p>
-<p><b>ISO:</b> {scene?.settings?.iso_range}</p>
-<p><b>Aperture:</b> {scene?.settings?.aperture}</p>
+<p><b>ISO:</b> {scene?.settings?.iso_range || "200-400"}</p>
+<p><b>Aperture:</b> {scene?.settings?.aperture || "f/2.8"}</p>
 </div>
 
 </motion.div>

@@ -1,6 +1,8 @@
 import { useState } from "react"
 import PageWrapper from "../components/PageWrapper"
 
+const API = "https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default"
+
 export default function Ideas(){
 
 const [niche,setNiche] = useState("")
@@ -8,9 +10,14 @@ const [ideas,setIdeas] = useState([])
 
 async function generateIdeas(){
 
+if(!niche){
+alert("Please enter a niche")
+return
+}
+
 try{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/ideas",{
+const res = await fetch(`${API}/api/ideas`,{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -25,7 +32,7 @@ const data = await res.json()
 
 console.log("IDEAS RESPONSE:",data)
 
-if(data && data.success && data.data && data.data.ideas){
+if(data && data.success && data.data && Array.isArray(data.data.ideas)){
 
 setIdeas(data.data.ideas)
 
@@ -51,7 +58,7 @@ async function addToCalendar(idea){
 
 try{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
+const res = await fetch(`${API}/api/calendar/add`,{
 method:"POST",
 headers:{
 "Content-Type":"application/json"

@@ -32,7 +32,7 @@ const data = await res.json()
 
 if(data && data.success){
 
-const scriptsData = data.data || []
+const scriptsData = Array.isArray(data.data) ? data.data : []
 
 setScripts(scriptsData.length)
 
@@ -61,7 +61,7 @@ const data = await res.json()
 
 if(data && data.success){
 
-const calendarData = data.data || []
+const calendarData = Array.isArray(data.data) ? data.data : []
 
 setCalendar(calendarData.length)
 
@@ -160,11 +160,11 @@ No scripts generated yet.
 
 recentScripts.map((script)=>(
 <div
-key={script.id}
+key={script?.id || Math.random()}
 className="border-b border-border py-3 text-textMuted hover:text-white hover:translate-x-1 transition duration-200"
 >
 
-{script.topic || "Untitled Script"}
+{script?.topic || "Untitled Script"}
 
 </div>
 ))

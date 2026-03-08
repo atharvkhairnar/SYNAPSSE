@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import PageWrapper from "../components/PageWrapper"
 
+const API = "https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default"
+
 export default function ScriptHistory(){
 
 const [scripts,setScripts] = useState([])
@@ -10,7 +12,7 @@ const [selectedScript,setSelectedScript] = useState(null)
 
 useEffect(()=>{
 
-fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts")
+fetch(`${API}/api/scripts`)
 .then(res=>res.json())
 .then(data=>{
 if(data && data.success){
@@ -25,7 +27,7 @@ setScripts(data.data || [])
 
 const downloadTXT = async(script)=>{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/export-script/txt",{
+const res = await fetch(`${API}/api/export-script/txt`,{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -48,7 +50,7 @@ a.click()
 
 const downloadPDF = async(script)=>{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/export-script/pdf",{
+const res = await fetch(`${API}/api/export-script/pdf`,{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -102,6 +104,7 @@ scripts.map((item)=>{
 
 const scriptData =
 item?.script?.data?.scripts?.[0] ||
+item?.script?.scripts?.[0] ||
 item?.script?.scripts?.[0]
 
 return(
@@ -116,7 +119,7 @@ className="bg-gray-800 border border-gray-700 p-5 rounded-xl mb-4 shadow-lg hove
 </p>
 
 <h2 className="text-lg font-semibold mt-1 text-gray-200">
-{item.topic}
+{item.topic || "Untitled Script"}
 </h2>
 
 <button
@@ -183,7 +186,7 @@ Hook
 </h3>
 
 <p className="text-gray-200 leading-relaxed">
-{selectedScript?.hook}
+{selectedScript?.hook || "Hook not available"}
 </p>
 
 </div>
@@ -191,31 +194,31 @@ Hook
 
 {/* SEGMENTS */}
 
-{selectedScript?.narrative?.map((scene)=>(
+{selectedScript?.narrative?.map((scene,index)=>(
 <div
-key={scene.segment}
+key={scene.segment || index}
 className="bg-gray-800 border border-gray-700 p-5 rounded-xl mb-6 shadow-lg hover:shadow-2xl transition duration-300"
 >
 
 <h3 className="text-lg text-red-300 font-bold mb-3">
-Segment {scene.segment}
+Segment {scene.segment || index+1}
 </h3>
 
-<p><b>Visual:</b> {scene.visual}</p>
+<p><b>Visual:</b> {scene.visual || "Scene description missing"}</p>
 
-<p><b>Voiceover (English):</b> {scene.voiceover?.english}</p>
-<p><b>Voiceover (Hindi):</b> {scene.voiceover?.hindi}</p>
+<p><b>Voiceover (English):</b> {scene.voiceover?.english || "-"}</p>
+<p><b>Voiceover (Hindi):</b> {scene.voiceover?.hindi || "-"}</p>
 
-<p><b>Ambience:</b> {scene.audio?.ambience}</p>
-<p><b>Transition:</b> {scene.audio?.transitions}</p>
+<p><b>Ambience:</b> {scene.audio?.ambience || "Background music"}</p>
+<p><b>Transition:</b> {scene.audio?.transitions || "Smooth transition"}</p>
 
-<p><b>Shot Type:</b> {scene.camera_setup?.shot_type}</p>
-<p><b>Angle:</b> {scene.camera_setup?.angle}</p>
-<p><b>Movement:</b> {scene.camera_setup?.movement}</p>
-<p><b>Lighting:</b> {scene.camera_setup?.lighting}</p>
+<p><b>Shot Type:</b> {scene.camera_setup?.shot_type || "Medium shot"}</p>
+<p><b>Angle:</b> {scene.camera_setup?.angle || "Eye level"}</p>
+<p><b>Movement:</b> {scene.camera_setup?.movement || "Slow pan"}</p>
+<p><b>Lighting:</b> {scene.camera_setup?.lighting || "Soft lighting"}</p>
 
-<p><b>ISO:</b> {scene.settings?.iso_range}</p>
-<p><b>Aperture:</b> {scene.settings?.aperture}</p>
+<p><b>ISO:</b> {scene.settings?.iso_range || "200-400"}</p>
+<p><b>Aperture:</b> {scene.settings?.aperture || "f/2.8"}</p>
 
 </div>
 ))}
