@@ -41,7 +41,7 @@ format:"Cinematic"
 
 const data = await res.json()
 
-setScript(data)
+setScript(data.data)
 
 setLoading(false)
 
@@ -161,7 +161,7 @@ className="bg-surface border border-border p-6 rounded-xl mb-8 shadow-lg hover:s
 
 <p className="text-lg text-textMain leading-relaxed">
 {
-script?.data?.scripts?.[0]?.hook ||
+script?.scripts?.[0]?.hook ||
 script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
 "No hook generated"
 }
@@ -172,7 +172,7 @@ script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
 
 {/* SEGMENTS */}
 
-{script?.data?.scripts?.[0]?.narrative?.map((scene,index)=>(
+{script?.scripts?.[0]?.narrative?.map((scene,index)=>(
 <motion.div
 key={scene.segment}
 initial={{opacity:0,y:20}}

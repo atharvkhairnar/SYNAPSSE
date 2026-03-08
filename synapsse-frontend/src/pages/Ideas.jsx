@@ -23,13 +23,19 @@ platform:"Instagram Reels"
 
 const data = await res.json()
 
-if(data?.data?.ideas){
+console.log("IDEAS RESPONSE:",data)
+
+if(data && data.success && data.data && data.data.ideas){
 
 setIdeas(data.data.ideas)
 
 localStorage.setItem("ideaCount", data.data.ideas.length)
 
 window.dispatchEvent(new Event("ideasUpdated"))
+
+}else{
+
+alert("Idea generation failed")
 
 }
 
@@ -41,12 +47,11 @@ console.error("Idea generation error:",err)
 
 }
 
-
 async function addToCalendar(idea){
 
 try{
 
-await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -57,9 +62,21 @@ idea:idea
 })
 })
 
+const data = await res.json()
+
+console.log("CALENDAR RESPONSE:",data)
+
+if(data && data.success){
+
 window.dispatchEvent(new Event("calendarUpdated"))
 
 alert("Idea added to calendar!")
+
+}else{
+
+alert("Failed to add idea to calendar")
+
+}
 
 }catch(err){
 
@@ -79,9 +96,6 @@ return(
 AI Idea Generator
 </h1>
 
-
-{/* INPUT */}
-
 <input
 className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-primary transition"
 placeholder="Enter niche..."
@@ -89,18 +103,12 @@ value={niche}
 onChange={(e)=>setNiche(e.target.value)}
 />
 
-
-{/* GENERATE BUTTON */}
-
 <button
 onClick={generateIdeas}
 className="bg-primary hover:bg-primaryHover px-6 py-3 rounded-lg text-white hover:scale-105 hover:shadow-lg transition duration-200"
 >
 Generate Ideas
 </button>
-
-
-{/* IDEAS */}
 
 <div className="mt-8">
 
@@ -135,7 +143,6 @@ className="bg-surface border border-border p-4 rounded-xl mb-4 flex justify-betw
 {idea}
 
 </p>
-
 
 <button
 onClick={()=>addToCalendar(idea)}

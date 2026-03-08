@@ -9,21 +9,26 @@ const [calendar,setCalendar] = useState([])
 
 /* LOAD EXISTING CALENDAR ENTRIES */
 
-useEffect(()=>{
+async function loadCalendar(){
 
-fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar")
-.then(res=>res.json())
-.then(data=>{
+try{
+
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar")
+
+const data = await res.json()
 
 if(data && Array.isArray(data.data)){
 setCalendar(data.data)
 }
 
-})
-.catch(err=>{
+}catch(err){
 console.error("Calendar fetch error:",err)
-})
+}
 
+}
+
+useEffect(()=>{
+loadCalendar()
 },[])
 
 
@@ -33,7 +38,7 @@ async function addIdea(){
 
 try{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
+await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -44,17 +49,12 @@ idea:idea
 })
 })
 
-const data = await res.json()
-
-if(data && Array.isArray(data.data)){
-setCalendar(data.data)
-}
-else if(data && data.data && Array.isArray(data.data.calendar)){
-setCalendar(data.data.calendar)
-}
-
 setDay("")
 setIdea("")
+
+/* RELOAD CALENDAR AFTER ADD */
+
+loadCalendar()
 
 window.dispatchEvent(new Event("calendarUpdated"))
 

@@ -13,6 +13,8 @@ const [recentScripts,setRecentScripts] = useState([])
 
 useEffect(()=>{
 
+/* UPDATE IDEAS */
+
 function updateIdeas(){
 setIdeas(Number(localStorage.getItem("ideaCount")) || 0)
 }
@@ -21,35 +23,59 @@ updateIdeas()
 
 /* FETCH SCRIPTS */
 
-fetch(`${API}/api/scripts`)
-.then(res=>res.json())
-.then(data=>{
+async function fetchScripts(){
+
+try{
+
+const res = await fetch(`${API}/api/scripts`)
+const data = await res.json()
+
+if(data && data.success){
 
 const scriptsData = data.data || []
 
 setScripts(scriptsData.length)
 
 const latest = scriptsData.slice(-5).reverse()
+
 setRecentScripts(latest)
 
-})
+}
+
+}catch(err){
+
+console.error("Script fetch error:",err)
+
+}
+
+}
 
 /* FETCH CALENDAR */
 
-function fetchCalendar(){
+async function fetchCalendar(){
 
-fetch(`${API}/api/calendar`)
-.then(res=>res.json())
-.then(data=>{
+try{
+
+const res = await fetch(`${API}/api/calendar`)
+const data = await res.json()
+
+if(data && data.success){
 
 const calendarData = data.data || []
 
 setCalendar(calendarData.length)
 
-})
+}
+
+}catch(err){
+
+console.error("Calendar fetch error:",err)
 
 }
 
+}
+
+fetchScripts()
 fetchCalendar()
 
 window.addEventListener("ideasUpdated", updateIdeas)
@@ -71,6 +97,8 @@ return(
 <h1 className="text-3xl font-bold text-primary mb-8">
 Synapsse Dashboard
 </h1>
+
+{/* STATS */}
 
 <div className="grid grid-cols-3 gap-6">
 
@@ -112,6 +140,8 @@ Synapsse Dashboard
 
 </div>
 
+{/* RECENT SCRIPTS */}
+
 <div className="mt-12">
 
 <h2 className="text-xl font-bold text-primary mb-4">
@@ -134,7 +164,7 @@ key={script.id}
 className="border-b border-border py-3 text-textMuted hover:text-white hover:translate-x-1 transition duration-200"
 >
 
-{script.topic}
+{script.topic || "Untitled Script"}
 
 </div>
 ))
@@ -144,6 +174,8 @@ className="border-b border-border py-3 text-textMuted hover:text-white hover:tra
 </div>
 
 </div>
+
+{/* QUICK ACTIONS */}
 
 <div className="mt-10">
 

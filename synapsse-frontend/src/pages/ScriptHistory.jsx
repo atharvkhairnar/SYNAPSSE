@@ -13,8 +13,8 @@ useEffect(()=>{
 fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts")
 .then(res=>res.json())
 .then(data=>{
-if(data.success){
-setScripts(data.data)
+if(data && data.success){
+setScripts(data.data || [])
 }
 })
 
@@ -48,7 +48,7 @@ a.click()
 
 const downloadPDF = async(script)=>{
 
-const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/export-script/pdf",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -98,7 +98,14 @@ Generate your first AI script to see it here.
 
 ) : (
 
-scripts.map((item)=>(
+scripts.map((item)=>{
+
+const scriptData =
+item?.script?.data?.scripts?.[0] ||
+item?.script?.scripts?.[0]
+
+return(
+
 <div
 key={item.id}
 className="bg-gray-800 border border-gray-700 p-5 rounded-xl mb-4 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition duration-300"
@@ -114,13 +121,16 @@ className="bg-gray-800 border border-gray-700 p-5 rounded-xl mb-4 shadow-lg hove
 
 <button
 className="mt-3 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-white hover:scale-105 transition duration-200"
-onClick={()=>setSelectedScript(item.script.data.scripts[0])}
+onClick={()=>setSelectedScript(scriptData)}
 >
 View Script
 </button>
 
 </div>
-))
+
+)
+
+})
 
 )}
 
@@ -193,19 +203,19 @@ Segment {scene.segment}
 
 <p><b>Visual:</b> {scene.visual}</p>
 
-<p><b>Voiceover (English):</b> {scene.voiceover.english}</p>
-<p><b>Voiceover (Hindi):</b> {scene.voiceover.hindi}</p>
+<p><b>Voiceover (English):</b> {scene.voiceover?.english}</p>
+<p><b>Voiceover (Hindi):</b> {scene.voiceover?.hindi}</p>
 
-<p><b>Ambience:</b> {scene.audio.ambience}</p>
-<p><b>Transition:</b> {scene.audio.transitions}</p>
+<p><b>Ambience:</b> {scene.audio?.ambience}</p>
+<p><b>Transition:</b> {scene.audio?.transitions}</p>
 
-<p><b>Shot Type:</b> {scene.camera_setup.shot_type}</p>
-<p><b>Angle:</b> {scene.camera_setup.angle}</p>
-<p><b>Movement:</b> {scene.camera_setup.movement}</p>
-<p><b>Lighting:</b> {scene.camera_setup.lighting}</p>
+<p><b>Shot Type:</b> {scene.camera_setup?.shot_type}</p>
+<p><b>Angle:</b> {scene.camera_setup?.angle}</p>
+<p><b>Movement:</b> {scene.camera_setup?.movement}</p>
+<p><b>Lighting:</b> {scene.camera_setup?.lighting}</p>
 
-<p><b>ISO:</b> {scene.settings.iso_range}</p>
-<p><b>Aperture:</b> {scene.settings.aperture}</p>
+<p><b>ISO:</b> {scene.settings?.iso_range}</p>
+<p><b>Aperture:</b> {scene.settings?.aperture}</p>
 
 </div>
 ))}
