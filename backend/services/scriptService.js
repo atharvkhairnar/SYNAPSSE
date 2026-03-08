@@ -56,7 +56,7 @@ content:[
 ],
 
 inferenceConfig:{
-maxTokens:2000,
+maxTokens:4000,
 temperature:0.7,
 topP:0.9
 }
@@ -85,6 +85,14 @@ let aiData;
 
 try{
 
+// first attempt normal parse
+aiData = JSON.parse(aiText);
+
+}catch(err){
+
+try{
+
+// fallback extraction
 const start = aiText.indexOf("{");
 const end = aiText.lastIndexOf("}") + 1;
 
@@ -92,7 +100,9 @@ const jsonString = aiText.substring(start,end);
 
 aiData = JSON.parse(jsonString);
 
-}catch(err){
+}catch(e){
+
+console.log("⚠️ AI returned invalid JSON, using fallback");
 
 aiData = {
 scripts:[
@@ -106,6 +116,8 @@ viral_probability_score:0
 titles:[],
 thumbnail_text:[]
 };
+
+}
 
 }
 
