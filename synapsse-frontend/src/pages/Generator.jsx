@@ -12,7 +12,6 @@ const [loading,setLoading] = useState(false)
 const [platform,setPlatform] = useState("Instagram Reel")
 const [tone,setTone] = useState("Motivational")
 const [duration,setDuration] = useState("60 sec")
-const [minutes,setMinutes] = useState("")
 
 async function generateScript(){
 
@@ -25,11 +24,7 @@ try{
 
 setLoading(true)
 
-const finalDuration = duration
-
-const res = await fetch(
-`${API}/api/generate-script`,
-{
+const res = await fetch(`${API}/api/generate-script`,{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -38,12 +33,11 @@ body:JSON.stringify({
 topic,
 platform,
 tone,
-duration:finalDuration,
+duration,
 language:"Hinglish",
 format:"Cinematic"
 })
-}
-)
+})
 
 const data = await res.json()
 
@@ -70,13 +64,12 @@ return(
 AI Script Generator
 </h1>
 
+
 {/* INPUT CARD */}
 
 <div className="bg-surface border border-border p-6 rounded-xl mb-8 shadow-lg hover:shadow-primary/20 transition duration-300 max-w-2xl">
 
-<label className="text-textMuted text-sm mb-1 block">
-Topic
-</label>
+<label className="text-textMuted text-sm mb-1 block">Topic</label>
 
 <input
 className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-primary transition"
@@ -85,9 +78,7 @@ value={topic}
 onChange={(e)=>setTopic(e.target.value)}
 />
 
-<label className="text-textMuted text-sm mb-1 block">
-Platform
-</label>
+<label className="text-textMuted text-sm mb-1 block">Platform</label>
 
 <select
 value={platform}
@@ -98,9 +89,7 @@ className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-
 <option>YouTube Short</option>
 </select>
 
-<label className="text-textMuted text-sm mb-1 block">
-Tone
-</label>
+<label className="text-textMuted text-sm mb-1 block">Tone</label>
 
 <select
 value={tone}
@@ -117,9 +106,7 @@ className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-
 <option>Sarcastic</option>
 </select>
 
-<label className="text-textMuted text-sm mb-1 block">
-Duration
-</label>
+<label className="text-textMuted text-sm mb-1 block">Duration</label>
 
 <select
 value={duration}
@@ -152,11 +139,14 @@ loading
 
 </div>
 
+
 {/* SCRIPT OUTPUT */}
 
 {script && (
 
 <div className="mt-10">
+
+{/* HOOK */}
 
 <motion.div
 initial={{opacity:0,y:20}}
@@ -171,15 +161,16 @@ className="bg-surface border border-border p-6 rounded-xl mb-8 shadow-lg hover:s
 
 <p className="text-lg text-textMain leading-relaxed">
 {
-script?.data?.scripts?.[0]?.hook
-||
-script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english
-||
+script?.data?.scripts?.[0]?.hook ||
+script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english ||
 "No hook generated"
 }
 </p>
 
 </motion.div>
+
+
+{/* SEGMENTS */}
 
 {script?.data?.scripts?.[0]?.narrative?.map((scene,index)=>(
 <motion.div
@@ -194,9 +185,51 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 🎥 Segment {scene.segment}
 </h3>
 
-<p><b>Visual:</b> {scene.visual}</p>
+
+{/* VISUAL */}
+
+<div className="mb-4">
+<p className="text-textMuted text-sm mb-1">VISUAL</p>
+<p className="text-textMain">{scene.visual}</p>
+</div>
+
+
+{/* VOICEOVER */}
+
+<div className="mb-4">
+<p className="text-textMuted text-sm mb-1">VOICEOVER</p>
 <p><b>English:</b> {scene?.voiceover?.english}</p>
 <p><b>Hindi:</b> {scene?.voiceover?.hindi}</p>
+</div>
+
+
+{/* AUDIO */}
+
+<div className="mb-4">
+<p className="text-textMuted text-sm mb-1">AUDIO</p>
+<p><b>Ambience:</b> {scene?.audio?.ambience}</p>
+<p><b>Transition:</b> {scene?.audio?.transitions}</p>
+</div>
+
+
+{/* CAMERA */}
+
+<div className="mb-4">
+<p className="text-textMuted text-sm mb-1">CAMERA</p>
+<p><b>Shot Type:</b> {scene?.camera_setup?.shot_type}</p>
+<p><b>Angle:</b> {scene?.camera_setup?.angle}</p>
+<p><b>Movement:</b> {scene?.camera_setup?.movement}</p>
+<p><b>Lighting:</b> {scene?.camera_setup?.lighting}</p>
+</div>
+
+
+{/* SETTINGS */}
+
+<div>
+<p className="text-textMuted text-sm mb-1">SETTINGS</p>
+<p><b>ISO:</b> {scene?.settings?.iso_range}</p>
+<p><b>Aperture:</b> {scene?.settings?.aperture}</p>
+</div>
 
 </motion.div>
 ))}
