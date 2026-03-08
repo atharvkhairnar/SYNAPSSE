@@ -4,7 +4,8 @@ const path = require("path")
 
 const router = express.Router()
 
-const filePath = path.join("backend","cache","calendar.json")
+const cacheDir = path.join(__dirname,"../cache")
+const filePath = path.join(cacheDir,"calendar.json")
 
 /*
 ADD IDEA TO CALENDAR
@@ -25,11 +26,15 @@ message:"Day and idea are required"
 
 }
 
+if(!fs.existsSync(cacheDir)){
+fs.mkdirSync(cacheDir)
+}
+
 let calendar = []
 
 if(fs.existsSync(filePath)){
 
-const data = fs.readFileSync(filePath)
+const data = fs.readFileSync(filePath,"utf8")
 
 calendar = JSON.parse(data)
 
@@ -75,7 +80,7 @@ let calendar = []
 
 if(fs.existsSync(filePath)){
 
-const data = fs.readFileSync(filePath)
+const data = fs.readFileSync(filePath,"utf8")
 
 calendar = JSON.parse(data)
 

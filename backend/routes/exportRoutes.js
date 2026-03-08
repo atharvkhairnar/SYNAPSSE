@@ -11,13 +11,20 @@ try{
 
 const script = req.body
 
+if(!script){
+return res.status(400).json({
+success:false,
+message:"Script data required"
+})
+}
+
 const filePath = exportTXT(script)
 
 res.download(filePath,"script.txt")
 
 }catch(err){
 
-console.error(err)
+console.error("TXT export error:",err)
 
 res.status(500).json({
 success:false,
@@ -37,13 +44,20 @@ try{
 
 const script = req.body
 
+if(!script){
+return res.status(400).json({
+success:false,
+message:"Script data required"
+})
+}
+
 const filePath = await exportPDF(script)
 
 res.download(filePath,"script.pdf")
 
 }catch(err){
 
-console.error(err)
+console.error("PDF export error:",err)
 
 res.status(500).json({
 success:false,

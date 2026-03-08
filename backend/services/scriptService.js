@@ -19,16 +19,12 @@ const cacheKey = `${topic}_${platform}_${tone}_${duration}_${language}`;
 
 try{
 
-/* CACHE CHECK */
-
 const cachedScript = getCachedScript(cacheKey);
 
 if(cachedScript){
 console.log("⚡ Returning cached script");
 return cachedScript;
 }
-
-/* BUILD PROMPT */
 
 const prompt = buildPrompt({
 topic,
@@ -39,8 +35,6 @@ duration,
 language,
 format
 });
-
-/* BEDROCK REQUEST */
 
 const command = new InvokeModelCommand({
 
@@ -71,14 +65,10 @@ topP:0.9
 
 });
 
-/* CALL BEDROCK */
-
 const response = await client.send(command);
 
 const decoded = new TextDecoder().decode(response.body);
 const parsed = JSON.parse(decoded);
-
-/* EXTRACT MODEL OUTPUT SAFELY */
 
 let aiText = "";
 
@@ -86,14 +76,10 @@ if(parsed?.output?.message?.content?.length){
 aiText = parsed.output.message.content[0].text;
 }
 
-/* CLEAN RESPONSE */
-
 aiText = aiText
 .replace(/```json/g,"")
 .replace(/```/g,"")
 .trim();
-
-/* PARSE AI JSON */
 
 let aiData;
 
@@ -102,17 +88,11 @@ try{
 const start = aiText.indexOf("{");
 const end = aiText.lastIndexOf("}") + 1;
 
-if(start === -1 || end === -1){
-throw new Error("Invalid JSON format");
-}
-
 const jsonString = aiText.substring(start,end);
 
 aiData = JSON.parse(jsonString);
 
 }catch(err){
-
-console.log("⚠️ AI returned invalid JSON. Using fallback.");
 
 aiData = {
 scripts:[
@@ -129,11 +109,7 @@ thumbnail_text:[]
 
 }
 
-/* GENERATE EXTRA HOOKS */
-
 const optimizedHooks = await generateHooks(topic);
-
-/* FINAL RESULT */
 
 const result = {
 
@@ -146,8 +122,6 @@ retention_prediction: aiData.scripts?.[0]?.retention_prediction || {},
 viral_probability_score: aiData.scripts?.[0]?.viral_probability_score || 0
 
 };
-
-/* STORE CACHE */
 
 storeScript(cacheKey,result);
 
@@ -167,23 +141,11 @@ throw new Error("Script generation failed");
    SCRIPT HISTORY MANAGEMENT
 ================================ */
 
-/*
-AWS Lambda only allows writing in /tmp
-Local dev will also work with this path
-*/
-
-const historyDir = "/tmp/cache";
-const historyPath = "/tmp/cache/scripts.json";
-
-/* READ HISTORY */
+const historyPath = path.join(__dirname,"../cache/scripts.json");
 
 function readHistory(){
 
 try{
-
-if(!fs.existsSync(historyDir)){
-fs.mkdirSync(historyDir,{ recursive:true });
-}
 
 if(!fs.existsSync(historyPath)){
 fs.writeFileSync(historyPath, JSON.stringify([]));
@@ -202,8 +164,6 @@ return [];
 
 }
 
-/* WRITE HISTORY */
-
 function writeHistory(data){
 
 try{
@@ -217,8 +177,6 @@ console.log("History write error:",err);
 }
 
 }
-
-/* SAVE SCRIPT */
 
 function saveScript(script){
 
@@ -238,13 +196,9 @@ return newScript;
 
 }
 
-/* GET HISTORY */
-
 function getScriptHistory(){
 return readHistory();
 }
-
-/* DELETE SCRIPT */
 
 function deleteScript(id){
 

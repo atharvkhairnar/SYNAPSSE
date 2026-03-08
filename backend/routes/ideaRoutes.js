@@ -3,13 +3,26 @@ const { generateIdeas } = require("../services/ideaService.js");
 
 const router = express.Router();
 
-router.post("/generate-ideas", async (req,res)=>{
+/*
+GENERATE IDEAS
+*/
 
-const { niche, platform } = req.body;
+router.post("/generate-ideas", async (req,res)=>{
 
 try{
 
-const ideas = await generateIdeas(niche,platform);
+const { niche, platform } = req.body;
+
+if(!niche){
+
+return res.status(400).json({
+success:false,
+message:"Niche is required"
+});
+
+}
+
+const ideas = await generateIdeas(niche, platform);
 
 res.json({
 success:true,
@@ -18,7 +31,7 @@ data:ideas
 
 }catch(error){
 
-console.log(error);
+console.error("Idea generation error:",error);
 
 res.status(500).json({
 success:false,
