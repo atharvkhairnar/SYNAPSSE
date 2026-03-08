@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import PageWrapper from "../components/PageWrapper"
 
+const API = "https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default"
+
 export default function Dashboard(){
 
 const [scripts,setScripts] = useState(0)
@@ -19,29 +21,31 @@ updateIdeas()
 
 /* FETCH SCRIPTS */
 
-fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts")
+fetch(`${API}/api/scripts`)
 .then(res=>res.json())
 .then(data=>{
-if(data.success){
 
-setScripts(data.data.length)
+const scriptsData = data.data || []
 
-const latest = data.data.slice(-5).reverse()
+setScripts(scriptsData.length)
+
+const latest = scriptsData.slice(-5).reverse()
 setRecentScripts(latest)
 
-}
 })
 
 /* FETCH CALENDAR */
 
 function fetchCalendar(){
 
-fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar")
+fetch(`${API}/api/calendar`)
 .then(res=>res.json())
 .then(data=>{
-if(data.success){
-setCalendar(data.data.length)
-}
+
+const calendarData = data.data || []
+
+setCalendar(calendarData.length)
+
 })
 
 }
@@ -68,9 +72,6 @@ return(
 Synapsse Dashboard
 </h1>
 
-
-{/* STATISTICS */}
-
 <div className="grid grid-cols-3 gap-6">
 
 <div className="bg-surface border border-border p-6 rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.03] transition duration-300">
@@ -85,7 +86,6 @@ Synapsse Dashboard
 
 </div>
 
-
 <div className="bg-surface border border-border p-6 rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.03] transition duration-300">
 
 <h2 className="text-lg text-textMuted flex items-center gap-2">
@@ -97,7 +97,6 @@ Synapsse Dashboard
 </p>
 
 </div>
-
 
 <div className="bg-surface border border-border p-6 rounded-xl shadow-lg hover:shadow-primary/20 hover:scale-[1.03] transition duration-300">
 
@@ -112,9 +111,6 @@ Synapsse Dashboard
 </div>
 
 </div>
-
-
-{/* RECENT SCRIPTS */}
 
 <div className="mt-12">
 
@@ -148,9 +144,6 @@ className="border-b border-border py-3 text-textMuted hover:text-white hover:tra
 </div>
 
 </div>
-
-
-{/* QUICK ACTIONS */}
 
 <div className="mt-10">
 

@@ -2,6 +2,8 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import PageWrapper from "../components/PageWrapper"
 
+const API = "https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default"
+
 export default function Generator(){
 
 const [topic,setTopic] = useState("")
@@ -26,7 +28,7 @@ setLoading(true)
 const finalDuration = duration
 
 const res = await fetch(
-"https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/generate-script",
+`${API}/api/generate-script`,
 {
 method:"POST",
 headers:{
@@ -45,25 +47,9 @@ format:"Cinematic"
 
 const data = await res.json()
 
-/* IMPORTANT FIX */
-setScript( data )
+setScript(data)
 
 setLoading(false)
-
-/* HISTORY SAVE DISABLED FOR LAMBDA */
-// await fetch(
-// "https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts",
-// {
-// method:"POST",
-// headers:{
-// "Content-Type":"application/json"
-// },
-// body:JSON.stringify({
-// topic,
-// script:data
-// })
-// }
-// )
 
 }catch(err){
 
@@ -83,7 +69,6 @@ return(
 <h1 className="text-3xl font-bold text-primary mb-8">
 AI Script Generator
 </h1>
-
 
 {/* INPUT CARD */}
 
@@ -113,7 +98,6 @@ className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-
 <option>YouTube Short</option>
 </select>
 
-
 <label className="text-textMuted text-sm mb-1 block">
 Tone
 </label>
@@ -133,7 +117,6 @@ className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-
 <option>Sarcastic</option>
 </select>
 
-
 <label className="text-textMuted text-sm mb-1 block">
 Duration
 </label>
@@ -148,9 +131,6 @@ className="bg-black border border-border text-textMain p-3 rounded-lg w-full mb-
 <option>60 sec</option>
 <option>90 sec</option>
 </select>
-
-
-{/* GENERATE BUTTON */}
 
 <button
 onClick={generateScript}
@@ -172,16 +152,11 @@ loading
 
 </div>
 
-
-
 {/* SCRIPT OUTPUT */}
 
 {script && (
 
 <div className="mt-10">
-
-
-{/* HOOK */}
 
 <motion.div
 initial={{opacity:0,y:20}}
@@ -206,10 +181,6 @@ script?.data?.scripts?.[0]?.narrative?.[0]?.voiceover?.english
 
 </motion.div>
 
-
-
-{/* SEGMENTS */}
-
 {script?.data?.scripts?.[0]?.narrative?.map((scene,index)=>(
 <motion.div
 key={scene.segment}
@@ -223,41 +194,9 @@ className="bg-surface border border-border p-6 rounded-xl mb-6 shadow-lg hover:s
 🎥 Segment {scene.segment}
 </h3>
 
-
-<div className="mb-4">
-<p className="text-textMuted text-sm mb-1">VISUAL</p>
-<p className="text-textMain">{scene.visual}</p>
-</div>
-
-
-<div className="mb-4">
-<p className="text-textMuted text-sm mb-1">VOICEOVER</p>
+<p><b>Visual:</b> {scene.visual}</p>
 <p><b>English:</b> {scene?.voiceover?.english}</p>
 <p><b>Hindi:</b> {scene?.voiceover?.hindi}</p>
-</div>
-
-
-<div className="mb-4">
-<p className="text-textMuted text-sm mb-1">AUDIO</p>
-<p><b>Ambience:</b> {scene?.audio?.ambience}</p>
-<p><b>Transition:</b> {scene?.audio?.transitions}</p>
-</div>
-
-
-<div className="mb-4">
-<p className="text-textMuted text-sm mb-1">CAMERA</p>
-<p><b>Shot Type:</b> {scene?.camera_setup?.shot_type}</p>
-<p><b>Angle:</b> {scene?.camera_setup?.angle}</p>
-<p><b>Movement:</b> {scene?.camera_setup?.movement}</p>
-<p><b>Lighting:</b> {scene?.camera_setup?.lighting}</p>
-</div>
-
-
-<div>
-<p className="text-textMuted text-sm mb-1">SETTINGS</p>
-<p><b>ISO:</b> {scene?.settings?.iso_range}</p>
-<p><b>Aperture:</b> {scene?.settings?.aperture}</p>
-</div>
 
 </motion.div>
 ))}
