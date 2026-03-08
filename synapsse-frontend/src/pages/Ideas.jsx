@@ -10,7 +10,7 @@ async function generateIdeas(){
 
 try{
 
-const res = await fetch("http://localhost:3000/api/generate-ideas",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/generate-ideas",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -46,7 +46,7 @@ async function addToCalendar(idea){
 
 try{
 
-await fetch("http://localhost:3000/api/calendar/add",{
+await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"

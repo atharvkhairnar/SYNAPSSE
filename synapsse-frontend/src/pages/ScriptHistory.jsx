@@ -10,7 +10,7 @@ const [selectedScript,setSelectedScript] = useState(null)
 
 useEffect(()=>{
 
-fetch("http://localhost:3000/api/scripts")
+fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts")
 .then(res=>res.json())
 .then(data=>{
 if(data.success){
@@ -25,7 +25,7 @@ setScripts(data.data)
 
 const downloadTXT = async(script)=>{
 
-const res = await fetch("http://localhost:3000/api/export-script/txt",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/export-script/txt",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -48,7 +48,7 @@ a.click()
 
 const downloadPDF = async(script)=>{
 
-const res = await fetch("http://localhost:3000/api/export-script/pdf",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/scripts",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"

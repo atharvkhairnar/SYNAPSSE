@@ -11,7 +11,7 @@ const [calendar,setCalendar] = useState([])
 
 useEffect(()=>{
 
-fetch("http://localhost:3000/api/calendar")
+fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar")
 .then(res=>res.json())
 .then(data=>{
 
@@ -33,7 +33,7 @@ async function addIdea(){
 
 try{
 
-const res = await fetch("http://localhost:3000/api/calendar/add",{
+const res = await fetch("https://dfd5qmxvmi.execute-api.us-east-1.amazonaws.com/default/api/calendar/add",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
