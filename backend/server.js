@@ -39,6 +39,24 @@ app.get("/", (req, res) => {
 });
 
 /*
+ENSURE CACHE DIRECTORY EXISTS
+*/
+const cacheDir = path.join(__dirname, "cache");
+
+if (!fs.existsSync(cacheDir)) {
+  fs.mkdirSync(cacheDir);
+}
+
+/*
+ENSURE SCRIPTS FILE EXISTS
+*/
+const scriptsFile = path.join(cacheDir, "scripts.json");
+
+if (!fs.existsSync(scriptsFile)) {
+  fs.writeFileSync(scriptsFile, JSON.stringify([]));
+}
+
+/*
 API ROUTES
 */
 app.use("/api", scriptRoutes);
@@ -51,28 +69,34 @@ SAVE SCRIPT API
 */
 app.post("/api/scripts", (req, res) => {
 
-  const { topic, script } = req.body;
+  try {
 
-  const filePath = path.join(__dirname, "cache", "scripts.json");
+    const { topic, script } = req.body;
 
-  let scripts = [];
+    let scripts = JSON.parse(fs.readFileSync(scriptsFile));
 
-  if (fs.existsSync(filePath)) {
-    scripts = JSON.parse(fs.readFileSync(filePath));
+    scripts.push({
+      id: Date.now(),
+      topic: topic,
+      script: script,
+      createdAt: new Date().toISOString()
+    });
+
+    fs.writeFileSync(scriptsFile, JSON.stringify(scripts, null, 2));
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    console.error("Save script error:", err);
+
+    res.status(500).json({
+      success: false
+    });
+
   }
-
-  scripts.push({
-    id: Date.now(),
-    topic: topic,
-    script: script,
-    createdAt: new Date().toISOString()
-  });
-
-  fs.writeFileSync(filePath, JSON.stringify(scripts, null, 2));
-
-  res.json({
-    success: true
-  });
 
 });
 
@@ -81,21 +105,25 @@ GET SCRIPT HISTORY
 */
 app.get("/api/scripts", (req, res) => {
 
-  const filePath = path.join(__dirname, "cache", "scripts.json");
+  try {
 
-  if (!fs.existsSync(filePath)) {
-    return res.json({
+    const scripts = JSON.parse(fs.readFileSync(scriptsFile));
+
+    res.json({
+      success: true,
+      data: scripts
+    });
+
+  } catch (err) {
+
+    console.error("Read script error:", err);
+
+    res.json({
       success: true,
       data: []
     });
+
   }
-
-  const scripts = JSON.parse(fs.readFileSync(filePath));
-
-  res.json({
-    success: true,
-    data: scripts
-  });
 
 });
 

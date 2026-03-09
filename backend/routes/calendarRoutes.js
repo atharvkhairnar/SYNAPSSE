@@ -1,107 +1,97 @@
-const express = require("express")
-const fs = require("fs")
-const path = require("path")
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 
-const router = express.Router()
+const router = express.Router();
 
-const cacheDir = path.join(__dirname,"../cache")
-const filePath = path.join(cacheDir,"calendar.json")
+const cacheDir = path.join(__dirname, "../cache");
+const filePath = path.join(cacheDir, "calendar.json");
 
-/*
-ADD IDEA TO CALENDAR
-*/
+/* ================================
+   ENSURE CACHE + FILE EXIST
+================================ */
 
-router.post("/add",(req,res)=>{
+if (!fs.existsSync(cacheDir)) {
+  fs.mkdirSync(cacheDir, { recursive: true });
+}
 
-try{
+if (!fs.existsSync(filePath)) {
+  fs.writeFileSync(filePath, JSON.stringify([]));
+}
 
-const { day, idea } = req.body
+/* ================================
+   ADD IDEA TO CALENDAR
+================================ */
 
-if(!day || !idea){
+router.post("/add", (req, res) => {
 
+try {
+
+const { day, idea } = req.body;
+
+if (!idea) {
 return res.status(400).json({
 success:false,
-message:"Day and idea are required"
-})
-
+message:"Idea is required"
+});
 }
 
-if(!fs.existsSync(cacheDir)){
-fs.mkdirSync(cacheDir)
-}
-
-let calendar = []
-
-if(fs.existsSync(filePath)){
-
-const data = fs.readFileSync(filePath,"utf8")
-
-calendar = JSON.parse(data)
-
-}
+let calendar = JSON.parse(fs.readFileSync(filePath,"utf8") || "[]");
 
 const newIdea = {
 id: Date.now(),
-day: day,
+day: day || "Auto",
 idea: idea
-}
+};
 
-calendar.push(newIdea)
+calendar.push(newIdea);
 
-fs.writeFileSync(filePath,JSON.stringify(calendar,null,2))
+fs.writeFileSync(filePath, JSON.stringify(calendar,null,2));
 
 res.json({
 success:true,
 data:calendar
-})
+});
 
-}catch(err){
+} catch (err) {
 
-console.error(err)
+console.error("Calendar add error:",err);
 
 res.status(500).json({
 success:false,
 message:"Server error"
-})
+});
 
 }
 
-})
+});
 
-/*
-GET ALL CALENDAR ENTRIES
-*/
+/* ================================
+   GET CALENDAR
+================================ */
 
-router.get("/",(req,res)=>{
+router.get("/", (req,res)=>{
 
 try{
 
-let calendar = []
-
-if(fs.existsSync(filePath)){
-
-const data = fs.readFileSync(filePath,"utf8")
-
-calendar = JSON.parse(data)
-
-}
+let calendar = JSON.parse(fs.readFileSync(filePath,"utf8") || "[]");
 
 res.json({
 success:true,
 data:calendar
-})
+});
 
 }catch(err){
 
-console.error(err)
+console.error("Calendar read error:",err);
 
 res.json({
 success:true,
 data:[]
-})
+});
 
 }
 
-})
+});
 
-module.exports = router
+module.exports = router;

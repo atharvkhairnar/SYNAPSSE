@@ -7,13 +7,15 @@ This works both in Lambda and local dev
 
 const CACHE_FILE = "/tmp/scripts-cache.json";
 
-/* ensure cache file exists */
+/* ================================
+   ENSURE CACHE FILE EXISTS
+================================ */
 
-function ensureCache() {
+function ensureCache(){
 
 try{
 
-if (!fs.existsSync(CACHE_FILE)) {
+if(!fs.existsSync(CACHE_FILE)){
 fs.writeFileSync(CACHE_FILE, JSON.stringify({}), "utf8");
 }
 
@@ -25,15 +27,19 @@ console.log("Cache initialization error:", err);
 
 }
 
-/* get entire cache */
+/* ================================
+   READ CACHE
+================================ */
 
-function getCache() {
+function getCache(){
 
 try{
 
 ensureCache();
 
 const data = fs.readFileSync(CACHE_FILE, "utf8");
+
+if(!data) return {};
 
 return JSON.parse(data);
 
@@ -47,9 +53,11 @@ return {};
 
 }
 
-/* save entire cache */
+/* ================================
+   SAVE CACHE
+================================ */
 
-function saveCache(cache) {
+function saveCache(cache){
 
 try{
 
@@ -69,9 +77,11 @@ console.log("Cache write error:", err);
 
 }
 
-/* get specific script */
+/* ================================
+   GET CACHED SCRIPT
+================================ */
 
-function getCachedScript(key) {
+function getCachedScript(key){
 
 try{
 
@@ -89,9 +99,11 @@ return null;
 
 }
 
-/* store script */
+/* ================================
+   STORE SCRIPT
+================================ */
 
-function storeScript(key, data) {
+function storeScript(key, data){
 
 try{
 

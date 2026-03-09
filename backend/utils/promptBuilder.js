@@ -1,7 +1,5 @@
 function buildPrompt(input){
 
-let segmentCount = 8
-
 return `
 You are Synapsse AI.
 
@@ -13,12 +11,11 @@ IMPORTANT RULES
 2. Do NOT include markdown.
 3. Do NOT include explanations.
 4. Response must start with { and end with }.
-5. EXACTLY ${segmentCount} narrative segments must be generated.
-6. Do NOT skip any segments.
-7. Fill ALL fields completely.
-8. English voiceover must be natural English.
+5. You MUST generate exactly 8 segments in the narrative array.
+6. Do NOT skip any segment.
+7. Fill every field with meaningful content.
+8. English voiceover must be natural spoken English.
 9. Hindi voiceover must be written in proper Devanagari Hindi.
-10. Do not shorten the script.
 
 INPUT
 
@@ -32,14 +29,16 @@ Format: ${input.format}
 
 STRUCTURE
 
-Segment 1 = Hook  
-Segment 2 = Problem  
-Segment 3 = Emotional connection  
-Segment 4 = Insight  
-Segment 5 = Advice  
-Segment 6 = Reinforcement  
-Segment 7 = Transformation  
-Segment 8 = Climax insight  
+Segment 1 → Hook  
+Segment 2 → Problem  
+Segment 3 → Emotional connection  
+Segment 4 → Insight  
+Segment 5 → Advice  
+Segment 6 → Reinforcement  
+Segment 7 → Transformation  
+Segment 8 → Climax insight  
+
+Each segment MUST follow this exact JSON structure.
 
 OUTPUT FORMAT
 

@@ -19,12 +19,16 @@ const cacheKey = `${topic}_${platform}_${tone}_${duration}_${language}`;
 
 try{
 
+/* CACHE CHECK */
+
 const cachedScript = getCachedScript(cacheKey);
 
 if(cachedScript){
 console.log("⚡ Returning cached script");
 return cachedScript;
 }
+
+/* BUILD PROMPT */
 
 const prompt = buildPrompt({
 topic,
@@ -36,12 +40,12 @@ language,
 format
 });
 
+/* BEDROCK REQUEST */
+
 const command = new InvokeModelCommand({
 
 modelId: "amazon.nova-lite-v1:0",
-
 contentType: "application/json",
-
 accept: "application/json",
 
 body: JSON.stringify({
@@ -49,9 +53,7 @@ body: JSON.stringify({
 messages:[
 {
 role:"user",
-content:[
-{ text: prompt }
-]
+content:[{ text: prompt }]
 }
 ],
 
@@ -65,6 +67,8 @@ topP:0.9
 
 });
 
+/* CALL BEDROCK */
+
 const response = await client.send(command);
 
 const decoded = new TextDecoder().decode(response.body);
@@ -76,10 +80,14 @@ if(parsed?.output?.message?.content?.length){
 aiText = parsed.output.message.content[0].text;
 }
 
+/* CLEAN RESPONSE */
+
 aiText = aiText
 .replace(/```json/g,"")
 .replace(/```/g,"")
 .trim();
+
+/* PARSE JSON */
 
 let aiData;
 
@@ -105,7 +113,7 @@ console.log("⚠️ AI returned invalid JSON");
 aiData = {
 scripts:[
 {
-hook:"Generated hook",
+hook:"AI generation failed",
 narrative:[]
 }
 ],
@@ -117,58 +125,11 @@ thumbnail_text:[]
 
 }
 
-/* ================================
-   FORCE 8 SEGMENTS
-================================ */
-
-if(aiData?.scripts?.[0]){
-
-let narrative = aiData.scripts[0].narrative || [];
-
-const targetSegments = 8;
-
-while(narrative.length < targetSegments){
-
-const index = narrative.length + 1;
-
-narrative.push({
-segment:String(index),
-visual:"Cinematic continuation of the story",
-voiceover:{
-english:"The story continues with deeper insight.",
-hindi:"कहानी और गहराई के साथ आगे बढ़ती है।"
-},
-audio:{
-ambience:"cinematic ambience",
-transitions:"smooth transition"
-},
-camera_setup:{
-shot_type:"medium shot",
-angle:"eye level",
-movement:"slow pan",
-lighting:"cinematic lighting"
-},
-settings:{
-iso_range:"100-400",
-aperture:"f/2.8"
-}
-});
-
-}
-
-aiData.scripts[0].narrative = narrative;
-
-}
-
-/* ================================
-   HOOK OPTIMIZATION
-================================ */
+/* HOOK OPTIMIZATION */
 
 const optimizedHooks = await generateHooks(topic);
 
-/* ================================
-   FINAL RESULT
-================================ */
+/* FINAL RESULT */
 
 const result = {
 
@@ -181,6 +142,8 @@ retention_prediction: aiData.scripts?.[0]?.retention_prediction || {},
 viral_probability_score: aiData.scripts?.[0]?.viral_probability_score || 0
 
 };
+
+/* STORE CACHE */
 
 storeScript(cacheKey,result);
 

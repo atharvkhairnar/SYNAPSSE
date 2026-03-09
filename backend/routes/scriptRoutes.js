@@ -19,6 +19,13 @@ try{
 
 const result = await generateScript(req.body);
 
+/* AUTO SAVE SCRIPT */
+
+await saveScript({
+topic:req.body.topic,
+data:result
+});
+
 res.json({
 success:true,
 data:result
@@ -31,37 +38,6 @@ console.error("Script generation error:",error);
 res.status(500).json({
 success:false,
 message:"Script generation failed"
-});
-
-}
-
-});
-
-
-/* ================================
-   SAVE SCRIPT
-================================ */
-
-router.post("/save-script", async (req,res)=>{
-
-try{
-
-const { script } = req.body;
-
-const saved = await saveScript(script);
-
-res.json({
-success:true,
-data:saved
-});
-
-}catch(error){
-
-console.error("Save script error:",error);
-
-res.status(500).json({
-success:false,
-message:"Failed to save script"
 });
 
 }
