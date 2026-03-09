@@ -1,7 +1,7 @@
-const { InvokeModelCommand } = require("@aws-sdk/client-bedrock-runtime");
-const client = require("../config/bedrockClient.js");
+import { InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
+import client from "../config/bedrockClient.js";
 
-async function generateHooks(topic) {
+export async function generateHooks(topic) {
 
 const prompt = `
 You are a viral content strategist.
@@ -91,6 +91,3 @@ return data.hooks;
 
 }
 
-module.exports = {
-generateHooks
-};

@@ -1,54 +1,64 @@
-const { InvokeModelCommand } = require("@aws-sdk/client-bedrock-runtime")
-const client=require("../config/bedrockClient")
+import { InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime"
+import client from "../config/bedrockClient.js"
 
-async function generateIdeas(niche,platform){
+export async function generateIdeas(niche, platform){
 
-const prompt=`Generate 10 viral video ideas.
+const prompt = `
+Generate 10 viral content ideas.
 
-Niche:${niche}
-Platform:${platform}
+Niche: ${niche}
+Platform: ${platform}
 
-Return JSON:
+Return JSON format:
+
 {
-"ideas":["idea1","idea2","idea3"]
-}`
+ "ideas":[
+  "idea 1",
+  "idea 2",
+  "idea 3"
+ ]
+}
+`
 
-const command=new InvokeModelCommand({
-
+const command = new InvokeModelCommand({
 modelId:"amazon.nova-lite-v1:0",
 contentType:"application/json",
 accept:"application/json",
 
 body:JSON.stringify({
-messages:[{role:"user",content:[{text:prompt}]}],
-inferenceConfig:{maxTokens:800,temperature:0.7}
+messages:[
+{
+role:"user",
+content:[{text:prompt}]
+}
+],
+inferenceConfig:{
+maxTokens:1000,
+temperature:0.7
+}
+})
 })
 
-})
+const response = await client.send(command)
 
-const response=await client.send(command)
+const decoded = new TextDecoder().decode(response.body)
 
-const decoded=new TextDecoder().decode(response.body)
+const parsed = JSON.parse(decoded)
 
-const parsed=JSON.parse(decoded)
+let text = parsed.output.message.content[0].text
 
-let text=""
+text = text.replace(/```json/g,"").replace(/```/g,"").trim()
 
-if(parsed?.output?.message?.content?.length){
-text=parsed.output.message.content[0].text
+const start = text.indexOf("{")
+const end = text.lastIndexOf("}") + 1
+
+const jsonString = text.substring(start,end)
+
+const data = JSON.parse(jsonString)
+
+return data
+
 }
 
-text=text.replace(/```json/g,"").replace(/```/g,"").trim()
 
-let json
 
-try{
-json=JSON.parse(text)
-}catch{
-json={ideas:[]}
-}
-
-return json
-}
-
-module.exports={generateIdeas}

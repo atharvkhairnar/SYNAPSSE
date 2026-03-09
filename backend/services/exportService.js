@@ -1,6 +1,6 @@
-const fs = require("fs")
-const path = require("path")
-const PDFDocument = require("pdfkit")
+import fs from "fs"
+import path from "path"
+import PDFDocument from "pdfkit"
 
 /*
 SAFE TEXT FUNCTION
@@ -17,7 +17,7 @@ return text.normalize("NFKC")
 EXPORT TXT
 */
 
-function exportTXT(script){
+export function exportTXT(script){
 
 let content = ""
 
@@ -61,7 +61,7 @@ return filePath
 EXPORT PDF
 */
 
-function exportPDF(script){
+export function exportPDF(script){
 
 const doc = new PDFDocument()
 
@@ -131,7 +131,4 @@ resolve(filePath)
 
 }
 
-module.exports = {
-exportTXT,
-exportPDF
-}
+

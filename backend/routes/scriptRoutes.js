@@ -1,30 +1,24 @@
-const express = require("express");
+import express from "express";
 
-const {
-generateScript,
+import { generateScript } from "../services/scriptService.js";
+
+import {
 saveScript,
 getScriptHistory,
 deleteScript
-} = require("../services/scriptService.js");
+} from "../services/scriptService.js";
 
 const router = express.Router();
 
-/* ================================
-   GENERATE SCRIPT
-================================ */
 
-router.post("/generate-script", async (req,res)=>{
+/* Generate Script */
+
+router.post("/generate-script",
+     async (req,res)=>{
 
 try{
 
 const result = await generateScript(req.body);
-
-/* AUTO SAVE SCRIPT */
-
-await saveScript({
-topic:req.body.topic,
-data:result
-});
 
 res.json({
 success:true,
@@ -32,8 +26,6 @@ data:result
 });
 
 }catch(error){
-
-console.error("Script generation error:",error);
 
 res.status(500).json({
 success:false,
@@ -45,91 +37,81 @@ message:"Script generation failed"
 });
 
 
-/* ================================
-   GET SCRIPT HISTORY
-================================ */
+/* Save Script */
 
-router.get("/script-history", async (req,res)=>{
+router.post("/save-script",(req,res)=>{
 
-try{
+const {script} = req.body;
 
-const history = await getScriptHistory();
+const saved = saveScript(script);
+
+res.json({
+success:true,
+data:saved
+});
+
+});
+
+
+/* Get Script History */
+
+router.get("/script-history",(req,res)=>{
+
+const history = getScriptHistory();
 
 res.json({
 success:true,
 data:history
 });
 
-}catch(error){
-
-console.error("Get history error:",error);
-
-res.status(500).json({
-success:false,
-message:"Failed to fetch history"
-});
-
-}
-
 });
 
 
-/* ================================
-   DELETE SCRIPT
-================================ */
+/* Delete Script */
 
-router.delete("/script-history/:id", async (req,res)=>{
+router.delete("/script-history/:id",(req,res)=>{
 
-try{
-
-const updated = await deleteScript(req.params.id);
+const updated = deleteScript(req.params.id);
 
 res.json({
 success:true,
 data:updated
 });
 
-}catch(error){
-
-console.error("Delete script error:",error);
-
-res.status(500).json({
-success:false,
-message:"Failed to delete script"
 });
 
+
+export default router;
+
+
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+router.get("/scripts",(req,res)=>{
+
+const filePath = path.join(__dirname,"../cache/scripts.json")
+
+if(!fs.existsSync(filePath)){
+return res.json({
+success:true,
+data:[]
+})
 }
 
-});
-
-
-/* ================================
-   GET ALL SCRIPTS
-================================ */
-
-router.get("/scripts", async (req,res)=>{
-
-try{
-
-const scripts = await getScriptHistory();
+const scripts = JSON.parse(fs.readFileSync(filePath))
 
 res.json({
 success:true,
 data:scripts
-});
+})
 
-}catch(error){
-
-console.error("Get scripts error:",error);
-
-res.status(500).json({
-success:false,
-message:"Failed to fetch scripts"
-});
-
-}
-
-});
+})
 
 
-module.exports = router;
+
+
+
