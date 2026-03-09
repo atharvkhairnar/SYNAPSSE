@@ -1,46 +1,13 @@
 function buildPrompt(input){
 
 return `
-You are Synapsse AI.
-
-Generate a cinematic short-form video script for content creators.
-
-IMPORTANT RULES
-
-1. Output MUST be valid JSON.
-2. Do NOT include markdown.
-3. Do NOT include explanations.
-4. Response must start with { and end with }.
-5. You MUST generate exactly 8 segments in the narrative array.
-6. Do NOT skip any segment.
-7. Fill every field with meaningful content.
-8. English voiceover must be natural spoken English.
-9. Hindi voiceover must be written in proper Devanagari Hindi.
-
-INPUT
+Generate a cinematic short-form video script.
 
 Topic: ${input.topic}
 Platform: ${input.platform}
-Audience: ${input.audience}
 Tone: ${input.tone}
-Duration: ${input.duration}
-Language: ${input.language}
-Format: ${input.format}
 
-STRUCTURE
-
-Segment 1 → Hook  
-Segment 2 → Problem  
-Segment 3 → Emotional connection  
-Segment 4 → Insight  
-Segment 5 → Advice  
-Segment 6 → Reinforcement  
-Segment 7 → Transformation  
-Segment 8 → Climax insight  
-
-Each segment MUST follow this exact JSON structure.
-
-OUTPUT FORMAT
+Return ONLY valid JSON.
 
 {
  "scripts":[
@@ -52,107 +19,51 @@ OUTPUT FORMAT
     {
      "segment":"1",
      "visual":"",
-     "voiceover":{
-      "english":"",
-      "hindi":""
-     },
-     "audio":{
-      "ambience":"",
-      "transitions":""
-     },
-     "camera_setup":{
-      "shot_type":"",
-      "angle":"",
-      "movement":"",
-      "lighting":""
-     },
-     "settings":{
-      "iso_range":"",
-      "aperture":""
-     }
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"2",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"3",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"4",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"5",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"6",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"7",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     },
-
     {
      "segment":"8",
      "visual":"",
-     "voiceover":{"english":"","hindi":""},
-     "audio":{"ambience":"","transitions":""},
-     "camera_setup":{"shot_type":"","angle":"","movement":"","lighting":""},
-     "settings":{"iso_range":"","aperture":""}
+     "voiceover":{"english":"","hindi":""}
     }
 
-   ],
-
-   "retention_prediction":{
-    "overall_retention_percentage":0,
-    "drop_zone_timestamp":"",
-    "peak_engagement_timestamp":""
-   },
-
-   "viral_probability_score":0
+   ]
   }
- ],
-
- "titles":[],
- "thumbnail_text":[]
+ ]
 }
-`;
+`
 }
 
 module.exports = {
 buildPrompt
-};
+}
